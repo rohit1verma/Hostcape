@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV != "production") {
+if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
 
@@ -10,7 +10,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
-const MongoStore = require('connect-mongo');
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const localStrategy = require("passport-local");
@@ -42,23 +42,23 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
-  crypto:{
-    secret:process.env.SECRET,
+  crypto: {
+    secret: process.env.SECRET,
   },
   touchAfter: 24 * 3600,
 });
 
-store.on("error",() => {
+store.on("error", () => {
   console.log("Error in MONGO SESSION STORE");
-})
+});
 
 const sessionOptions = {
   store,
-  secret : process.env.SECRET,
-  resave : false,
-  saveUninitialized : true,
-  cookie:{
-    expires : Date.now() + 1000 * 60 * 60 * 24 * 7,
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
   },
@@ -93,10 +93,11 @@ app.use("/", userRouter);
 //   next(new ExpressError("Page Not Found", 404));
 // });
 
-app.use((err,req,res,next) => {
-  let { statusCode=500, message="Something went wrong" } = err;
-  res.status(statusCode).render("error.ejs",{message});
+app.use((err, req, res, next) => {
+  let { statusCode = 500, message = "Something went wrong" } = err;
+  res.status(statusCode).render("error.ejs", { message });
 });
-app.listen(8080, () => {
-  console.log("Server is running on port 8080");
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
